@@ -33,13 +33,13 @@ resource "aws_internet_gateway" "my-gw" {
 
 resource "aws_subnet" "Public-subnet" {
   #count             = 3
-  count = "${length(var.public_cidr_block)}"
+  count             = length(var.public_cidr_block)
   vpc_id            = aws_vpc.default.id
-  cidr_block        = element(var.public_cidr_block, count.index+1)
+  cidr_block        = element(var.public_cidr_block, count.index + 1)
   availability_zone = element(var.azs, count.index)
 
   tags = {
-    Name        = "${var.vpc_name}-Public-subnet-${count.index+1}"
+    Name        = "${var.vpc_name}-Public-subnet-${count.index + 1}"
     Owner       = local.Owner
     costcenter  = local.costcenter
     TamDL       = local.TamDL
@@ -49,13 +49,13 @@ resource "aws_subnet" "Public-subnet" {
 
 resource "aws_subnet" "Private-subnet" {
   #count             = 3
-  count = "${length(var.private_cidr_block)}"
+  count             = length(var.private_cidr_block)
   vpc_id            = aws_vpc.default.id
-  cidr_block        = element(var.private_cidr_block, count.index+1)
+  cidr_block        = element(var.private_cidr_block, count.index + 1)
   availability_zone = element(var.azs, count.index)
 
   tags = {
-    Name        = "${var.vpc_name}-Private-subnet-${count.index+1}"
+    Name        = "${var.vpc_name}-Private-subnet-${count.index + 1}"
     Owner       = local.Owner
     costcenter  = local.costcenter
     TamDL       = local.TamDL
@@ -94,14 +94,14 @@ resource "aws_route_table" "Private-RT" {
 
 resource "aws_route_table_association" "Public-Association" {
   #count          = 3
-  count = "${length(var.public_cidr_block)}"
+  count          = length(var.public_cidr_block)
   subnet_id      = element(aws_subnet.Public-subnet.*.id, count.index)
   route_table_id = aws_route_table.Public-RT.id
 }
 
 resource "aws_route_table_association" "Private-Association" {
   #count          = 3
-  count = "${length(var.private_cidr_block)}"
+  count          = length(var.private_cidr_block)
   subnet_id      = element(aws_subnet.Private-subnet.*.id, count.index)
   route_table_id = aws_route_table.Private-RT.id
 }
